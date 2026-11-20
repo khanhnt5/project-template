@@ -1,0 +1,76 @@
+CÂY THƯ MỤC
+
+project-template/
+|-- README.txt
+|-- STRUCTURE.txt
+|-- app/                            Ứng dụng phía người dùng
+|   |-- src/
+|   |   |-- bootstrap/              Điểm khởi động, cấu hình, nối dependency
+|   |   |-- navigation/             Route, router, điều hướng
+|   |   |-- core/
+|   |   |   |-- designsystem/       Theme, màu, font, UI component chung
+|   |   |   `-- platform/           Adapter HTTP, storage, thiết bị, logging
+|   |   `-- features/
+|   |       `-- example/            Đổi thành tên tính năng thực tế
+|   |           |-- presentation/
+|   |           |   |-- screens/   Màn hình hoặc trang
+|   |           |   |-- components/ Thành phần UI riêng của tính năng
+|   |           |   `-- state/     ViewModel/presenter, state, action
+|   |           |-- domain/
+|   |           |   |-- models/    Mô hình nghiệp vụ
+|   |           |   |-- repositories/ Hợp đồng truy cập dữ liệu
+|   |           |   `-- usecases/  Quy tắc, thao tác nghiệp vụ khi cần
+|   |           `-- data/
+|   |               |-- repositories/ Triển khai hợp đồng repository
+|   |               |-- sources/   Đọc/ghi local, API, file
+|   |               |-- models/    DTO, entity theo định dạng lưu/truyền
+|   |               `-- mappers/   Chuyển DTO/entity sang model nghiệp vụ
+|   |-- resources/                 Ảnh, font, bản dịch, dữ liệu runtime
+|   `-- tests/                     Kiểm thử app; nên phản chiếu features
+|-- backend/                       Tùy chọn: không cần server thì bỏ
+|   `-- service-example/           Đổi tên theo dịch vụ thực tế
+|       |-- src/
+|       |   |-- bootstrap/         Khởi động server và nối dependency
+|       |   |-- transport/         Route, controller, request/response
+|       |   |-- domain/            Nghiệp vụ và hợp đồng server
+|       |   `-- data/              Database, repository, dịch vụ ngoài
+|       `-- tests/
+|-- shared/                        Tùy chọn: dùng giữa app và server
+|   |-- contracts/                 Schema/giao thức trao đổi có phiên bản
+|   `-- domain/                    Luật thuần dùng chung nếu tương thích
+|-- assets/                        File nguồn thiết kế, ảnh gốc, giấy phép
+|-- docs/
+|   |-- architecture/              Cấu trúc, luồng code, quyết định kiến trúc
+|   |-- product/                   Yêu cầu và quy tắc sản phẩm
+|   `-- reviews/                   Kết quả kiểm tra, bàn giao
+`-- tools/                         Script hỗ trợ phát triển
+
+VÍ DỤ TÊN FILE TRONG features/example (đổi đuôi theo ngôn ngữ)
+
+presentation/screens/ExampleScreen       Vẽ giao diện
+presentation/state/ExampleViewModel      Nhận action, cập nhật UI state
+presentation/state/ExampleUiState        Loading, dữ liệu, lỗi
+domain/models/Example                    Dữ liệu nghiệp vụ
+domain/repositories/ExampleRepository    Interface/hợp đồng
+domain/usecases/LoadExample              Thao tác có quy tắc nghiệp vụ
+data/repositories/DefaultExampleRepository  Triển khai repository
+data/sources/ExampleLocalSource          Đọc/ghi dữ liệu local
+data/sources/ExampleRemoteSource         Gọi API nếu cần
+data/models/ExampleDto                   Dữ liệu theo API
+data/mappers/ExampleMapper               Chuyển đổi định dạng
+
+CHỌN ĐƯỜNG DẪN THEO CÔNG NGHỆ
+
+app/src ở đây là đường dẫn khái niệm cho mã ứng dụng.
+- Android: đặt bootstrap/navigation/core/features trong
+  app/src/main/java/<package>/; resources theo assets/ và res/ của Android;
+  tests theo src/test/ và src/androidTest/.
+- Web/desktop: có thể dùng app/src trực tiếp; thư mục route, public và
+  tài nguyên tuân theo framework. Ánh xạ các vai trò trên vào quy ước đó.
+- Chỉ backend: có thể bỏ app; khi server lớn, chia domain/data/transport
+  vào từng features/<ten-tinh-nang>/ thay vì gom tất cả vào một tầng.
+- shared/domain chỉ chia sẻ trực tiếp khi các bên dùng được cùng mã nguồn.
+  Khác ngôn ngữ: ưu tiên schema contracts và sinh client nếu phù hợp.
+
+Không đặt khóa bí mật trong resources hoặc shared; cấu hình bí mật của
+server đi qua biến môi trường hoặc cơ chế quản lý secret đã chọn.

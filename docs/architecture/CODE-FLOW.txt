@@ -1,0 +1,67 @@
+LUỒNG CODE VÀ QUY TẮC PHỤ THUỘC
+
+1. KHI KHỞI ĐỘNG
+
+Entry point -> bootstrap -> tạo data source/repository
+                        -> truyền repository vào ViewModel/use case
+                        -> navigation mở màn hình đầu tiên
+
+bootstrap là nơi biết implementation cụ thể. ViewModel nhận hợp đồng
+repository hoặc use case qua constructor/cơ chế dependency injection.
+
+2. KHI NGƯỜI DÙNG THAO TÁC
+
+Screen -> action -> ViewModel/presenter -> use case (nếu cần)
+       -> repository interface -> implementation -> local source/API
+
+Dữ liệu trở về:
+local source/API -> DTO/entity -> mapper -> domain model
+                -> ViewModel cập nhật UI state -> Screen hiển thị
+
+ViewModel chịu trách nhiệm loading/error/success. Quy tắc nghiệp vụ đặt
+ở domain; chi tiết database, HTTP và cache đặt ở data. Tính năng chỉ đọc
+dữ liệu đơn giản có thể gọi repository trực tiếp, chưa cần use case.
+
+3. HƯỚNG PHỤ THUỘC MÃ NGUỒN
+
+presentation ----> domain <---- data
+bootstrap -------> presentation + domain + data
+
+- domain không import presentation, data hoặc framework giao diện.
+- presentation không khởi tạo implementation repository hoặc gọi DB/API.
+- data triển khai interface do domain định nghĩa.
+- Chiều gọi lúc chạy khác chiều import: repository implementation được
+  truyền vào qua interface, nên domain không cần import data.
+- core không import features. shared không import app hoặc backend.
+- Feature khác không đọc thẳng storage hay sửa state nội bộ của nhau.
+  Nếu cần phối hợp, dùng hợp đồng công khai và nơi sở hữu nghiệp vụ rõ ràng.
+- Thao tác cần nhất quán nhiều thay đổi dữ liệu có một transaction phía
+  lưu trữ/server; không để từng màn hình tự ghi từng phần độc lập.
+
+4. NẾU CÓ BACKEND
+
+App remote source -> HTTP/API -> transport/controller
+                               -> domain/use case
+                               -> repository interface
+                               -> data implementation -> database
+
+transport xử lý request/response và xác thực tại biên; domain kiểm tra
+quyền và điều kiện nghiệp vụ. DTO API không trả thẳng entity database.
+shared/contracts mô tả giao thức; schema và thay đổi tương thích cần có
+phiên bản/chiến lược migration khi dữ liệu đã được sử dụng thực tế.
+
+5. THÊM TÍNH NĂNG MỚI
+
+- Tạo features/<ten-tinh-nang>/ từ features/example/.
+- Xác định model và repository contract trước khi nối dữ liệu.
+- Viết data source/repository cho nơi lưu trữ thực tế.
+- Thêm state và màn hình; nối dependency ở bootstrap, route ở navigation.
+- Kiểm thử quy tắc quan trọng và luồng tích hợp tương ứng.
+- Chỉ tách code sang core/shared khi đã có nhu cầu dùng chung rõ ràng.
+
+Ví dụ đơn giản: nút tải danh sách -> ExampleViewModel.load()
+-> ExampleRepository.load() -> DefaultExampleRepository
+-> ExampleLocalSource/ExampleRemoteSource -> domain models
+-> ExampleUiState.Success -> ExampleScreen.
+
+Tên và ví dụ trên mô tả vị trí, trách nhiệm; chưa có implementation chạy.

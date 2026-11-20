@@ -1,0 +1,22 @@
+# Local secrets and machine settings
+.env
+.env.*
+!.env.example
+local.properties
+*.keystore
+*.jks
+
+# Generated dependencies and outputs
+node_modules/
+build/
+dist/
+.gradle/
+.kotlin/
+__pycache__/
+.venv/
+
+# IDE and operating system files
+.idea/
+.DS_Store
+Thumbs.db
+*.log
